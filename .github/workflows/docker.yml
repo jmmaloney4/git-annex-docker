@@ -8,7 +8,7 @@ on:
       - '**'
   pull_request:
 env:
-  IMAGE_NAME: "" # Fix Me
+  IMAGE_NAME: "git-annex"
 
 jobs:
   build-image:
