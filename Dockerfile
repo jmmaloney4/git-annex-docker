@@ -1,4 +1,4 @@
-FROM nixos/nix:2.11.0@sha256:25ce92cb4488a7f911929d7ba74828cfac7eae45e359f45709d74cd6c5915dc5
+FROM nixos/nix:2.11.1@sha256:d8c6b97091d6944dd773c3c239899af047077dbf5411ef229bb50e5b21404b0d
 
 RUN nix-channel --update
 RUN nix-env -i git-annex
