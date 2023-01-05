@@ -25,7 +25,7 @@ jobs:
       
       - run: sudo apt-get update; sudo apt-get -y install skopeo
       
-      - run: skopeo copy dir:./result ghcr.io/jmmaloney4/git-annex:nix --dest-creds docker:ghcr.io/jmmaloney4:${{ secrets.GITHUB_TOKEN }}
+      - run: skopeo copy dir:./result ghcr.io/jmmaloney4/git-annex --dest-creds docker:ghcr.io/jmmaloney4:${{ secrets.GITHUB_TOKEN }}
       
       # - name: Set up Docker Context for Buildx
       #   id: buildx-context
