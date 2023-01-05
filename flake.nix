@@ -16,9 +16,11 @@
           pkgs.nix
           pkgs.bashInteractive
           pkgs.coreutils-full
+          pkgs.cacert.out
+          pkgs.iana-etc
+
           pkgs.git
           pkgs.git-annex
-          pkgs.iana-etc
         ];
       };
     }
