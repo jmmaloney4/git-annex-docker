@@ -14,6 +14,7 @@
         name = "git-annex";
         contents = [
           pkgs.bash
+          pkgs.git
           pkgs.git-annex
           pkgs.iana-etc
         ];
