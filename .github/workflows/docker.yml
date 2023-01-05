@@ -3,7 +3,7 @@ name: Build Image
 on:
   push:
     branches:
-      - nix
+      - '**'
     tags:
       - '**'
   pull_request:
@@ -21,50 +21,8 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable
       
+      - run: sudo apt-get update; sudo apt-get -y install skopeo
+
       - run: nix build .
       
-      - run: sudo apt-get update; sudo apt-get -y install skopeo
-      
       - run: skopeo copy docker-archive:result docker://ghcr.io/jmmaloney4/git-annex --dest-creds ghcr.io/jmmaloney4:${{ secrets.GITHUB_TOKEN }}
-      
-      # - name: Set up Docker Context for Buildx
-      #   id: buildx-context
-      #   run: |
-      #     docker context create builders
-      
-      # - name: Set up Docker Buildx
-      #   uses: docker/setup-buildx-action@v2.2.1
-      #   with:
-      #     endpoint: builders
-
-      # - name: Login to ghcr.io
-      #   uses: docker/login-action@v2 
-      #   with:
-      #     registry: ghcr.io
-      #     username: ${{ github.repository_owner }}
-      #     password: ${{ secrets.GITHUB_TOKEN }}
-      
-      # - name: Prep Docker Tags
-      #   id: docker_meta
-      #   uses: docker/metadata-action@v4.1.1
-      #   with:
-      #     images: "ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}"
-      #     tags: |
-      #       type=ref,event=branch
-      #       type=ref,event=pr
-      #       type=ref,event=tag
-      #       type=edge
-      #       type=sha,prefix=git-
-
-      # - name: Build and push Docker images
-      #   uses: docker/build-push-action@v3.2.0
-      #   with:
-      #     context: .
-      #     file: ./Dockerfile
-      #     platforms: linux/amd64
-      #     push: true
-      #     tags: ${{ steps.docker_meta.outputs.tags }}
-      #     labels: ${{ steps.docker_meta.outputs.labels }}
-      
-      # - name: Image digest
-      #   run: echo ${{ steps.docker_build.outputs.digest }}
