@@ -13,7 +13,9 @@
       defaultPackage = pkgs.dockerTools.buildLayeredImage {
         name = "git-annex";
         contents = [
-          pkgs.bash
+          pkgs.nix
+          pkgs.bashInteractive
+          pkgs.coreutils-full
           pkgs.git
           pkgs.git-annex
           pkgs.iana-etc
