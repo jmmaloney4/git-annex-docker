@@ -12,15 +12,15 @@
     {
       defaultPackage = pkgs.dockerTools.buildLayeredImage {
         name = "git-annex";
-        contents = [
-          pkgs.nix
-          pkgs.bashInteractive
-          pkgs.coreutils-full
-          pkgs.cacert.out
-          pkgs.iana-etc
-
-          pkgs.git
-          pkgs.git-annex
+        contents = with pkgs; [
+          nix
+          bashInteractive
+          coreutils-full
+          cacert.out
+          iana-etc
+          openssh
+          git
+          git-annex
         ];
       };
     }
