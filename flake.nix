@@ -22,6 +22,9 @@
           git
           git-annex
         ];
+        config.Env = [
+          "USER=nobody"
+        ];
       };
     }
   );
