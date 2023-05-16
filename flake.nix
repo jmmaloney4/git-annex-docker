@@ -4,12 +4,15 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = {self, nixpkgs, flake-utils}:
+  outputs = {self, nixpkgs, flake-utils}: flake-utils.lib.eachDefaultSystem (system:
   let
-    pkgs = import nixpkgs { system = "x86_64-linux"; };
-  in
-  flake-utils.lib.eachDefaultSystem (system:
-  let
+    crossSystems = [ 
+      "x86_64-linux"
+      "aarch64-linux"
+    ];
+    # pkgs = import nixpkgs { system = "x86_64-linux"; };
+    pkgs = import nixpkgs { inherit system; };
+
     nonRootShadowSetup = { user, uid, gid ? uid }: with pkgs; [
         (
         writeTextDir "etc/shadow" ''
@@ -36,21 +39,46 @@
         ''
         )
       ];
-    in
-    {
-      defaultPackage = pkgs.dockerTools.buildLayeredImage {
-        name = "git-annex";
-        contents = with pkgs; [
-          nix
-          bashInteractive
-          coreutils-full
-          cacert.out
-          iana-etc
-          openssh
-          git
-          git-annex
-        ] ++ nonRootShadowSetup { uid = 999; user = "git"; };
-      };
-    }
+  in rec {
+    crossImages = pkgs.lib.genAttrs crossSystems (crossSystem: 
+      let
+        localSystem = system;
+        crossPkgs = import nixpkgs { inherit localSystem crossSystem; };
+      in pkgs.dockerTools.buildLayeredImage {
+          name = "git-annex";
+          contents = with crossPkgs; [
+            nix
+            bashInteractive
+            coreutils-full
+            cacert.out
+            iana-etc
+            openssh
+            git
+            git-annex
+          ] ++ nonRootShadowSetup { uid = 999; user = "git"; };
+        });
+    packages.default = pkgs.dockerTools.mergeImages (pkgs.lib.attrValues crossImages);
+  }
+  # in
+  # flake-utils.lib.eachDefaultSystem (system:
+  # let
+
+  #   in
+  #   rec {
+      
+  #     defaultPackage = pkgs.dockerTools.buildLayeredImage {
+  #       name = "git-annex";
+  #       contents = with pkgs; [
+  #         nix
+  #         bashInteractive
+  #         coreutils-full
+  #         cacert.out
+  #         iana-etc
+  #         openssh
+  #         git
+  #         git-annex
+  #       ] ++ nonRootShadowSetup { uid = 999; user = "git"; };
+  #     };
+  #   }
   );
 }
